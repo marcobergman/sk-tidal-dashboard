@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<!--
+//
+// Copyright (C) 2021 Marco Bergman <marcobergman@gmail.com>
+//
+// This Program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public
+// License as published by the Free Software Foundation; either
+// version 3 of the License, or (at your option) any later version.
+//
+-->
+
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>SignalK Waterlevels</title>
+  <style>
+	* {font-family: Consolas, monospace}
+	#data tr:nth-child(odd) { background-color: #f2f2f2;}
+	#displayLabel td {vertical-align: top; font-weight: bold}
+	#displayValue td {text-align: center; vertical-align: middle; font-size: xx-large; font-weight: bold}
+	#displayUnit td {text-align: center; vertical-align: middle;}
+  </style>
+</head>
+<body style="">
+	<div id="data"></div>
+	<div id="gauge" style="display: inline-block; vertical-align:top;"></div>
+	<div id="display" style="display: inline-block; vertical-align:top;"></div>
+	<div id="log"></div>
+
+	<script>
+// Defaults:
+var myServerURL = location.protocol + "//" + location.host;
+var vessel = "*";
+var timeOut = 5; // seconds before data is marked 'stale'
+var dampingFactor = 0.005;
+var directionTrueDampened = 0;
+var speedTrueDampened = 0;
+var stations = {}
+
+var names = {}
+var sog = {}
+var cog = {}
+var lat = {}
+var lon = {}
+var range = {}
+var bearing = {}
+var timestamp = {}
+var shiptype = {}
+var ownShip = ""
+var ownTarget = ""
+var ownLat = 0
+var ownLon = 0
+var ownHeading = 0
+var canvases = []
+
+//
+// Configure your signalk url:port below, like openplotter.myboat.local:3000 or 10.10.10.1:3000
+/*
+myServerURL = "http://192.168.178.3:3000";
+*/
+
+/*
+var myServerURL = "https://cloud.signalk.org:443";
+var vessel = "urn:mrn:imo:mmsi:244150473";
+var timeOut = 60; // seconds before data is marked 'stale'
+*/
+
+var updatesPerSecond = 1;  // refresh rate
+
+// end user config
+
+var displayDiv = document.getElementById('display');
+var dataDiv = document.getElementById('data');
+var logDiv = document.getElementById('log');
+
+// process http parameters
+presentation = 'both'
+parameter_pairs = window.location.search.slice(1).split("&")
+parameter_pairs.forEach(function (item) {
+	if (item.split("=")[0] == "presentation")
+		presentation = item.split("=")[1]
+})
+
+
+function formatTimestamp(timestamp) {
+	var date = new Date(timestamp)
+
+	var hour = date.getHours();
+	var min = date.getMinutes();
+	var sec = date.getSeconds();
+
+	hour = (hour < 10 ? "0" : "") + hour;
+	min = (min < 10 ? "0" : "") + min;
+	sec = (sec < 10 ? "0" : "") + sec;
+
+	return hour + ":" + min + ":" + sec;
+}
+
+function arrow (trend) {
+	if (trend) {
+		if (trend > 0.001) return '<span style="color:blue;">🡅</span>'
+		if (trend < 0.001) return '<span style="color:red;">🡇</span>'
+	}
+	return ''
+}
+
+
+
+function printSignalkTable(signalkData) {
+	// print the contents of a dictionary in the form of an HTML table
+	var result = "<table border=0><tr><td><b>Station<td width=100><b>Astro<td width=100><b>Level (MSL)<td width=100 colspan=2><b>Trend/10min<td></tr>";
+
+	total = 0.0
+	divider = 0.0
+	for (var station in stations) {
+		result += "<tr>";
+		result += "<td><b>" + station + "</td>";	
+		result += "<td>" + "</td>";	
+		result += "<td>" + stations[station].waterlevel + "</td>";	
+		result += "<td>" + arrow(stations[station].trend) + "</td>";	
+		result += "<td align='center'>" + stations[station].trend + "</td>";	
+		result += "<td>" + stations[station].nextExtreme + "</td>";	
+		range = 60 * Math.sqrt (Math.pow(stations[station].latitude - ownLat, 2) 
+			+ Math.pow(Math.cos (ownLat / 180 * Math.PI) * (stations[station].longitude - ownLon), 2)) 
+		// result += "<td>" + range + "</td>";	
+		weighingFactor = 1 / range
+		total += stations[station].waterlevel * weighingFactor
+		divider += weighingFactor
+	}
+	average = total / divider
+	result += "<tr><td><b>THIS SHIP "+formatTimestamp(Date.now())+"<td><td><b>" + average.toFixed(2) + "</td></tr>"
+
+	result += "</table>";
+	dataDiv.innerHTML = result;
+}
+
+
+
+function httpGetAsync(theUrl, callback) {
+	// get a file through HTTP
+	var xmlHttp = new XMLHttpRequest();
+	xmlHttp.onreadystatechange = function() {
+		if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+			callback(xmlHttp.responseText);
+	}
+	xmlHttp.open("GET", theUrl, true); // true for asynchronous
+	xmlHttp.send(null);
+}
+
+
+// get the stations names, lats and longs
+httpGetAsync(myServerURL + "/signalk/v1/api/aton/", onSchema);
+
+function onSchema(responseText) {
+	// respond to the reception of a schema file
+	schema = JSON.parse(responseText);
+
+	Object.keys(schema).forEach(function(key) {
+		try {
+		position = {
+			latitude: schema[key].navigation.position.value['latitude'], 
+			longitude: schema[key].navigation.position.value['longitude'], 
+			nextExtreme: schema[key].environment.nextExtreme.value,
+			waterlevel: "",
+			trend: "" }
+		stations[key] = position
+		} catch (error) {console.log(schema, error)}
+
+	})
+	printSignalkTable(signalkData);
+	//console.log(stations)
+
+}
+
+
+
+// set up the stream of signalk deltas
+var wsURL = myServerURL.replace("http", "ws") + "/signalk/v1/stream?subscribe=none"
+var ws = new WebSocket(wsURL);
+
+// first subscribe for all vessels
+var subscriptionMessage1 = JSON.stringify({"context": "vessels.self", "subscribe": [ 
+	{"path": "navigation.position"}, 
+	]});
+var subscriptionMessage2 = JSON.stringify({"context": "aton.*", "subscribe": [ 
+	//{"path": "environment.depth.belowSurface"}, 
+	{"path": "*"}, 
+	]});
+
+ws.onopen = function(event) {
+	ws.send(subscriptionMessage1)
+	ws.send(subscriptionMessage2)
+}
+
+ws.onclose = function(e) {
+  logDiv.innerHTML = "<H1>Connection closed</H1>"
+  console.log("ws close", e);
+  setTimeout(function() {
+    ws = new WebSocket(wsURL);
+  }, 10000);
+
+}
+
+var signalkData = {};  // holds the signalk data
+var lastUpdate = Date.now();
+
+ws.onmessage = function(event) {
+	// Process an incoming signalk update message
+	json = JSON.parse(event.data);
+	//logDiv.innerHTML = logDiv.innerHTML + JSON.stringify(json, null, 2);
+
+	for (var key in json) {
+		//logDiv.innerHTML = JSON.stringify(json[key][0], null, 2);
+		if (key == "context") {
+			target = json[key]
+		}
+		if (key == "updates" ) {
+			ts = Date.parse(json[key][0]['timestamp']);
+			timestamp[target] = ts
+			// loop through all updated paths and store them in the various dicts
+
+			values = json[key][0]['values'];
+
+			for (tuple in values) {
+				path = values[tuple]['path'];
+				value = values[tuple]['value'];
+
+				if (path == "") { 
+					names[target] = value["name"] 
+				}
+				
+				if (path == "navigation.courseOverGroundTrue") { 
+					cog[target] = value 
+				}
+				
+				if (path == "design.aisShipType") { 
+					shiptype[target] = value["name"]
+						.replace(" (no additional information)", "")
+						.replace("Engaged in dredging or underwater operations", "Dredging")
+				} 
+
+				if (path == "navigation.speedOverGround") { 
+					sog[target] = value 
+				} 
+
+				if (path == "environment.depth.belowSurface") { 
+					station = target.split(".")[1]
+					if (stations[station]) {
+						oldwaterlevel = value
+						if (stations[station].waterlevel) oldwaterlevel = stations[station].waterlevel
+						stations[station].waterlevel = value
+						trend = value - oldwaterlevel
+						if (Math.abs(trend) > 0.001) 
+							stations[station].trend = trend.toFixed(2)
+					}
+				} 
+
+				
+				if (path == "navigation.position") { 
+					ownLat = value["latitude"]
+					ownLon = value["longitude"]
+				} 
+			}
+
+			// present the updated dictionary to the screen at the specified refresh rate
+			elapsed = Date.now() - lastUpdate;
+			if (elapsed > 1000/updatesPerSecond) {
+				printSignalkTable(signalkData);
+				lastUpdate = Date.now();
+			}
+		}
+	}
+}
+
+	</script>
+
+
+</body></html>
+
+
