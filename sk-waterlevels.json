@@ -1,0 +1,44 @@
+{
+  "configuration": {
+    "updateInterval": 60,
+    "downloadUrl": "https://waterinfo.rws.nl/api/Download/CSV?expertParameter=Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm&timehorizon=-48,48",
+    "downloadInterval": 3600,
+    "devices": [
+      {
+        "stationName": "Harlingen",
+        "sourceType": 1,
+        "csvFileName": "Harlingen.csv",
+        "stationLat": 52,
+        "stationLon": 5,
+        "stationSource": "https://waterinfo.rws.nl/api/Download/CSV?expertParameter=Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm&locationSlug=Harlingen(HARL)&timehorizon=-672,0",
+        "urlSuffix": "&locationSlug=Harlingen(HARL)"
+      },
+      {
+        "stationName": "West-Terschelling",
+        "sourceType": 1,
+        "csvFileName": "West-Terschelling.csv",
+        "urlSuffix": "&locationSlug=West-Terschelling(WTER)"
+      },
+      {
+        "stationName": "Vlieland",
+        "sourceType": 1,
+        "csvFileName": "Vlieland.csv",
+        "urlSuffix": "&locationSlug=Vlieland-haven(VLIE)"
+      },
+      {
+        "stationName": "Kornwerderzand",
+        "sourceType": 1,
+        "csvFileName": "Kornwerderzand.csv",
+        "urlSuffix": "&locationSlug=Kornwerderzand-buiten(KOBU)"
+      }
+    ],
+    "batteryCapacity": 1261,
+    "batteryAbsVoltage": 14.3,
+    "tailCurrent": 6.3,
+    "tailDuration": 5,
+    "floatResetVoltage": 12.6
+  },
+  "enabled": true,
+  "enableDebug": true,
+  "enableLogging": true
+}
