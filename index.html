@@ -35,27 +35,13 @@
 // Defaults:
 var myServerURL = location.protocol + "//" + location.host;
 var vessel = "*";
-var timeOut = 5; // seconds before data is marked 'stale'
-var dampingFactor = 0.005;
-var directionTrueDampened = 0;
-var speedTrueDampened = 0;
 var stations = {}
 
 var names = {}
-var sog = {}
-var cog = {}
 var lat = {}
 var lon = {}
-var range = {}
-var bearing = {}
-var timestamp = {}
-var shiptype = {}
-var ownShip = ""
-var ownTarget = ""
 var ownLat = 0
 var ownLon = 0
-var ownHeading = 0
-var canvases = []
 
 //
 // Configure your signalk url:port below, like openplotter.myboat.local:3000 or 10.10.10.1:3000
@@ -66,7 +52,6 @@ myServerURL = "http://192.168.178.3:3000";
 /*
 var myServerURL = "https://cloud.signalk.org:443";
 var vessel = "urn:mrn:imo:mmsi:244150473";
-var timeOut = 60; // seconds before data is marked 'stale'
 */
 
 var updatesPerSecond = 1;  // refresh rate
@@ -77,13 +62,6 @@ var displayDiv = document.getElementById('display');
 var dataDiv = document.getElementById('data');
 var logDiv = document.getElementById('log');
 
-// process http parameters
-presentation = 'both'
-parameter_pairs = window.location.search.slice(1).split("&")
-parameter_pairs.forEach(function (item) {
-	if (item.split("=")[0] == "presentation")
-		presentation = item.split("=")[1]
-})
 
 
 function formatTimestamp(timestamp) {
@@ -111,7 +89,6 @@ function arrow (trend) {
 
 
 function printSignalkTable(signalkData) {
-	// print the contents of a dictionary in the form of an HTML table
 	var result = "<table border=0><tr><td><b>Station<td width=100><b>Astro<td width=100><b>Level (MSL)<td width=100 colspan=2><b>Trend/10min<td></tr>";
 
 	total = 0.0
@@ -220,7 +197,6 @@ ws.onmessage = function(event) {
 		}
 		if (key == "updates" ) {
 			ts = Date.parse(json[key][0]['timestamp']);
-			timestamp[target] = ts
 			// loop through all updated paths and store them in the various dicts
 
 			values = json[key][0]['values'];
@@ -228,27 +204,13 @@ ws.onmessage = function(event) {
 			for (tuple in values) {
 				path = values[tuple]['path'];
 				value = values[tuple]['value'];
+				station = target.split(".")[1]
 
 				if (path == "") { 
 					names[target] = value["name"] 
 				}
 				
-				if (path == "navigation.courseOverGroundTrue") { 
-					cog[target] = value 
-				}
-				
-				if (path == "design.aisShipType") { 
-					shiptype[target] = value["name"]
-						.replace(" (no additional information)", "")
-						.replace("Engaged in dredging or underwater operations", "Dredging")
-				} 
-
-				if (path == "navigation.speedOverGround") { 
-					sog[target] = value 
-				} 
-
 				if (path == "environment.depth.belowSurface") { 
-					station = target.split(".")[1]
 					if (stations[station]) {
 						oldwaterlevel = value
 						if (stations[station].waterlevel) oldwaterlevel = stations[station].waterlevel
@@ -259,6 +221,11 @@ ws.onmessage = function(event) {
 					}
 				} 
 
+				if (path == "environment.nextExtreme") { 
+					if (stations[station]) {
+						stations[station].nextExtreme = value
+					}
+				}
 				
 				if (path == "navigation.position") { 
 					ownLat = value["latitude"]
