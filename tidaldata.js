@@ -15,6 +15,8 @@ function roundToNearestMinute(date = new Date()) {
 
 function initialiseStations (app) {
 
+	app.debug ("Initialising SignalK with tidal stations fixed data.")
+
 	function processStation (row){
 		message = {context: 'aton.' + row.stationName, updates: [ {values:
                         [ { path: 'navigation.position', value: {latitude: row.stationLat, longitude: row.stationLon} } ] } ] }
@@ -22,10 +24,9 @@ function initialiseStations (app) {
 		stationList.push(row.stationName)
 	}
 
-	app.debug ("Initialissing SignalK with tidal stations fixed data.")
-
 	var myFile = require('path').join(app.getDataDirPath(), 'tidalstations.conf')
 
+	stationList = []
 	fs.createReadStream(myFile)
 		.pipe(csv.parse({ headers: true, delimiter: "\t" }))
 		.on('error', error => console.error(error))
