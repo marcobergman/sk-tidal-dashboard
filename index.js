@@ -16,7 +16,6 @@
 
 
 const PLUGIN_ID = 'sk-tidal-dashboard';
-const _ = require("lodash");
 
 const {
   initialiseStations,
