@@ -81,7 +81,7 @@ function formatTimestamp(timestamp) {
 function arrow (trend) {
 	if (trend) {
 		if (trend > 0.001) return '<span style="color:blue;">🡅</span>'
-		if (trend < 0.001) return '<span style="color:red;">🡇</span>'
+		if (trend < -0.001) return '<span style="color:red;">🡇</span>'
 	}
 	return ''
 }
@@ -98,8 +98,8 @@ function printSignalkTable(signalkData) {
 		result += "<td><b>" + station + "</td>";	
 		result += "<td>" + "</td>";	
 		result += "<td>" + stations[station].waterlevel + "</td>";	
-		result += "<td>" + arrow(stations[station].trend) + "</td>";	
-		result += "<td align='center'>" + stations[station].trend + "</td>";	
+		result += "<td>" + arrow(stations[station].tidalTrend) + "</td>";	
+		result += "<td align='center'>" + stations[station].tidalTrend + "</td>";	
 		result += "<td>" + stations[station].nextExtreme + "</td>";	
 		range = 60 * Math.sqrt (Math.pow(stations[station].latitude - ownLat, 2) 
 			+ Math.pow(Math.cos (ownLat / 180 * Math.PI) * (stations[station].longitude - ownLon), 2)) 
@@ -142,6 +142,7 @@ function onSchema(responseText) {
 			latitude: schema[key].navigation.position.value['latitude'], 
 			longitude: schema[key].navigation.position.value['longitude'], 
 			nextExtreme: schema[key].environment.nextExtreme.value,
+			tidalTrend: schema[key].environment.tidalTrend.value,
 			waterlevel: "",
 			trend: "" }
 		stations[key] = position
@@ -211,18 +212,19 @@ ws.onmessage = function(event) {
 				
 				if (path == "environment.depth.belowSurface") { 
 					if (stations[station]) {
-						oldwaterlevel = value
-						if (stations[station].waterlevel) oldwaterlevel = stations[station].waterlevel
 						stations[station].waterlevel = value
-						trend = value - oldwaterlevel
-						if (Math.abs(trend) > 0.001) 
-							stations[station].trend = trend.toFixed(2)
 					}
 				} 
 
 				if (path == "environment.nextExtreme") { 
 					if (stations[station]) {
 						stations[station].nextExtreme = value
+					}
+				}
+				
+				if (path == "environment.tidalTrend") { 
+					if (stations[station]) {
+						stations[station].tidalTrend = value
 					}
 				}
 				

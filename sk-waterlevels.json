@@ -37,12 +37,7 @@
         "stationLat": 53.07962,
         "stationLon": 5.335151667
       }
-    ],
-    "batteryCapacity": 1261,
-    "batteryAbsVoltage": 14.3,
-    "tailCurrent": 6.3,
-    "tailDuration": 5,
-    "floatResetVoltage": 12.6
+    ]
   },
   "enabled": true,
   "enableDebug": true,

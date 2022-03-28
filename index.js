@@ -41,9 +41,9 @@ module.exports = function(app) {
 
 	app.debug(PLUGIN_ID + 'Plugin started'); 
 
-	initialiseStations(app)
+	initialiseStations(app, options)
+	downloadStationData(app, options)
 	updateStations(app)
-	//downloadStationData(app, options)
 
 	let localSubscription = {
 	  context: '*', // Get data for all contexts
