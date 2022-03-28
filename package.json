@@ -1,11 +1,11 @@
 {
   "name": "sk-tidal-dashboard",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "SignalK node server plugin that reads tidal data from the internet and displays it in a web app.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postInstall": "node ./postInstall.js"
+    "postinstall": "node ./postInstall.js"
   },
   "keywords": [
     "signalk-node-server-plugin",
