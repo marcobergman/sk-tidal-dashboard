@@ -1,7 +1,7 @@
 
 const fs = require("fs");
 
-const TARGET = "../../plugin-config-data/sk-tidal-dashboard.json";
+const TARGET = "~/.signalk/plugin-config-data/sk-tidal-dashboard.json";
 const SOURCE = "./sk-tidal-dashboard.json";
 
 if (fs.existsSync(TARGET)) {
