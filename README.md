@@ -1,4 +1,4 @@
-# sk-waterlevels
+# Tidal Dashboard
 SignalK node server plugin that reads tidal data from the internet and displays it in a web app. Data is downloaded when on shore and processed while under sail. For waterlevel at the ship's position, a weighed average is calculated based on the distance to adjacent tidal stations.
 
 
