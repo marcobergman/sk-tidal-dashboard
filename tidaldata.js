@@ -3,6 +3,12 @@ const csv = require('fast-csv');
 const date = require('date-and-time')
 const https = require('https');
 
+const LOOKING_FOR_CURRENT_LEVEL = 1
+const LOOKING_FOR_NEXT_EXTREME = 2
+const NOT_LOOKING_ANYMORE = 3
+const RISING = "HW"
+const FALLING = "LW"
+
 var stationList = []
 
 function roundToNearestMinute(date = new Date()) {
@@ -41,39 +47,39 @@ function updateStations(app) {
 	timestampNow = new Date()
 	dateNow = date.format(roundToNearestMinute(timestampNow), "DD-M-YYYY")
 	timeNow = date.format(roundToNearestMinute(timestampNow), "HH:mm:ss")
+	streamState = {}
 	stationList.forEach(stationName => {
 		fileName = require('path').join(app.getDataDirPath(), stationName + '.csv')
+		streamState[stationName] = {status: LOOKING_FOR_CURRENT_LEVEL, previousWaterLevel: 0}
 		console.log ("Reading", fileName)
 		fs.createReadStream(fileName)
 			.pipe(csv.parse({ headers: true, delimiter: ";" }))
 			.on('error', error => console.error(error))
 			.on('data', row => {
+				waterLevel = parseFloat(row.Verwachting)/100
+				if (waterLevel > streamState[stationName].previousWaterLevel)
+					tide = RISING
+				if (waterLevel < streamState[stationName].previousWaterLevel)
+					tide = FALLING
 				if (row.Datum == dateNow && row.Tijd == timeNow) {
-					waterLevel = parseFloat(row.Verwachting)/100
-					app.debug(stationName + ": " + waterLevel)
+					console.log (stationName + ": " + waterLevel)
 					app.handleMessage('my-signalk-plugin', {context: 'aton.' + stationName, updates: [ {values: 
 						[ { path: 'environment.depth.belowSurface', value: waterLevel } ] 
 					} ] })
+					streamState[stationName].status = LOOKING_FOR_NEXT_EXTREME
+					currentTide = tide
 				}
+				if (streamState[stationName].status == LOOKING_FOR_NEXT_EXTREME)
+					if (tide != currentTide) {
+						nextExtreme = row.Tijd + " " + currentTide + " " + streamState[stationName].previousWaterLevel
+						console.log("nextExtreme", stationName, nextExtreme)
+						app.handleMessage('my-signalk-plugin', {context: 'aton.' + stationName, updates: [ {values:
+							[ { path: 'environment.nextExtreme', value: nextExtreme } ]
+						} ] })
+						streamState[stationName].status = NOT_LOOKING_ANYMORE
+					}
+				streamState[stationName].previousWaterLevel = waterLevel
 			});
-		fileName = require('path').join(app.getDataDirPath(), stationName + '-extremen.csv')
-		console.log ("Reading", fileName)
-		var nextExtreme = ""
-		fs.createReadStream(fileName)
-			.pipe(csv.parse({ headers: ['date', 'time', 'moonphase', 'highlow', 'waterlevel', 'rest'], 
-				delimiter: ";", skipLines: 4, renameHeaders: true, trim: true, ignoreEmpty: true }))
-			.on('error', error => console.error(error))
-			.on('data', row => {
-				timestamp = date.parse(row.date + " " + row.time, "DD/MM/YYYY HH:mm")
-				if (timestamp > timestampNow)
-					nextExtreme = row.time + " " + row.highlow + " " + row.waterlevel
-			})
-			.on('end', () => {
-				console.log("nextExtreme", stationName, nextExtreme)
-				app.handleMessage('my-signalk-plugin', {context: 'aton.' + stationName, updates: [ {values:
-					[ { path: 'environment.nextExtreme', value: nextExtreme } ]
-				} ] })
-			})
 	}) // forEach
 } // function updateStations
 
