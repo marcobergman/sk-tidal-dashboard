@@ -1,8 +1,8 @@
 
 const fs = require("fs");
 
-const TARGET = "~/.signalk/plugin-config-data/sk-tidal-dashboard.json";
-const SOURCE = "./sk-tidal-dashboard.json";
+const TARGET = "/home/pi/.signalk/plugin-config-data/sk-tidal-dashboard.json";
+const SOURCE = "sk-tidal-dashboard.json";
 
 if (fs.existsSync(TARGET)) {
   console.log(TARGET, "exists");
@@ -10,6 +10,6 @@ if (fs.existsSync(TARGET)) {
   console.log(TARGET, "does not exist");
   fs.copyFile(SOURCE, TARGET, (err) => {
     if (err) throw err;
-    console.log(SOURCE, "was copied to destination.txt');
+    console.log(SOURCE, "was copied to", TARGET);
   });
 }
