@@ -8,8 +8,8 @@
         "stationName": "Harlingen",
         "sourceType": 1,
         "csvFileName": "Harlingen.csv",
-        "stationLat": 52,
-        "stationLon": 5,
+        "stationLat": 53.176993333,
+        "stationLon": 5.40297,
         "stationSource": "https://waterinfo.rws.nl/api/Download/CSV?expertParameter=Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm&locationSlug=Harlingen(HARL)&timehorizon=-672,0",
         "urlSuffix": "&locationSlug=Harlingen(HARL)"
       },
@@ -17,19 +17,25 @@
         "stationName": "West-Terschelling",
         "sourceType": 1,
         "csvFileName": "West-Terschelling.csv",
-        "urlSuffix": "&locationSlug=West-Terschelling(WTER)"
+        "urlSuffix": "&locationSlug=West-Terschelling(WTER)",
+        "stationLat": 53.353418333,
+        "stationLon": 5.219511667
       },
       {
         "stationName": "Vlieland",
         "sourceType": 1,
         "csvFileName": "Vlieland.csv",
-        "urlSuffix": "&locationSlug=Vlieland-haven(VLIE)"
+        "urlSuffix": "&locationSlug=Vlieland-haven(VLIE)",
+        "stationLat": 53.293793333,
+        "stationLon": 5.091591667
       },
       {
         "stationName": "Kornwerderzand",
         "sourceType": 1,
         "csvFileName": "Kornwerderzand.csv",
-        "urlSuffix": "&locationSlug=Kornwerderzand-buiten(KOBU)"
+        "urlSuffix": "&locationSlug=Kornwerderzand-buiten(KOBU)",
+        "stationLat": 53.07962,
+        "stationLon": 5.335151667
       }
     ],
     "batteryCapacity": 1261,
