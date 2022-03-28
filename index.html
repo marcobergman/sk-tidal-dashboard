@@ -16,7 +16,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>SignalK Waterlevels</title>
+  <title>SignalK Tidal Dashboard</title>
   <style>
 	* {font-family: Consolas, monospace}
 	#data tr:nth-child(odd) { background-color: #f2f2f2;}
@@ -89,7 +89,7 @@ function arrow (trend) {
 
 
 function printSignalkTable(signalkData) {
-	var result = "<table border=0><tr><td><b>Station<td width=100><b>Astro<td width=100><b>Level (MSL)<td width=100 colspan=2><b>Trend/10min<td></tr>";
+	var result = "<table border=0><tr><td><b>Station<td width=100><b>Astro<td width=100><b>Level (MSL)<td width=100 colspan=2><b>Trend/10min<td><b>Next</tr>";
 
 	total = 0.0
 	divider = 0.0
@@ -109,7 +109,7 @@ function printSignalkTable(signalkData) {
 		divider += weighingFactor
 	}
 	average = total / divider
-	result += "<tr><td><b>THIS SHIP "+formatTimestamp(Date.now())+"<td><td><b>" + average.toFixed(2) + "</td></tr>"
+	result += "<tr><td><b>THIS SHIP "+formatTimestamp(Date.now())+"<td><td><b><h1>" + average.toFixed(2) + "</td></tr>"
 
 	result += "</table>";
 	dataDiv.innerHTML = result;
@@ -143,8 +143,7 @@ function onSchema(responseText) {
 			longitude: schema[key].navigation.position.value['longitude'], 
 			nextExtreme: schema[key].environment.nextExtreme.value,
 			tidalTrend: schema[key].environment.tidalTrend.value,
-			waterlevel: "",
-			trend: "" }
+			waterlevel: schema[key].environment.depth.belowSurface.value }
 		stations[key] = position
 		} catch (error) {console.log(schema, error)}
 

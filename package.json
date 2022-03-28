@@ -1,5 +1,5 @@
 {
-  "name": "sk-waterlevels",
+  "name": "sk-tidal-dashboard",
   "version": "1.0.1",
   "description": "SignalK node server plugin that reads tidal data from the internet and displays it in a web app.",
   "main": "index.js",
@@ -17,5 +17,5 @@
     "dateformat": "^5.0.3",
     "fast-csv": "^4.3.6"
   },
-  "repository": "https://github.com/marcobergman/sk-waterlevels"
+  "repository": "https://github.com/marcobergman/sk-tidal-dashboard"
 }

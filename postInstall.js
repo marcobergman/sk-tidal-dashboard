@@ -1,8 +1,8 @@
 
 const fs = require("fs");
 
-const TARGET = "../../plugin-config-data/sk-waterlevels.json";
-const SOURCE = "./sk-waterlevels.json";
+const TARGET = "../../plugin-config-data/sk-tidal-dashboard.json";
+const SOURCE = "./sk-tidal-dashboard.json";
 
 if (fs.existsSync(TARGET)) {
   console.log(TARGET, "exists");

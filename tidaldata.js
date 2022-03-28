@@ -70,7 +70,7 @@ function updateStations(app) {
 				}
 				if (streamState[stationName].status == LOOKING_FOR_NEXT_EXTREME)
 					if (tide != currentTide) {
-						nextExtreme = streamState[stationName].previousTimeStamp + " " + currentTide + " " + streamState[stationName].previousWaterLevel
+						nextExtreme = currentTide + " " + streamState[stationName].previousTimeStamp + " " + streamState[stationName].previousWaterLevel
 						console.log(stationName, "nextExtreme", nextExtreme)
 						app.handleMessage('my-signalk-plugin', {context: 'aton.' + stationName, updates: [ {values:
 							[ { path: 'environment.nextExtreme', value: nextExtreme } ]
