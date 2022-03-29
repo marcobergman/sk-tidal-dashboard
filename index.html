@@ -95,7 +95,7 @@ function printSignalkTable(signalkData) {
 
 	total = 0.0
 	divider = 0.0
-	timeOut = 61
+	timeOut = 300
 	for (var station in stations) {
 		stale = Date.now() - stations[station].timestamp > 1000 * timeOut ? true : false;
 
