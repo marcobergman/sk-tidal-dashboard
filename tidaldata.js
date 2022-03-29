@@ -1,3 +1,5 @@
+"use strict";
+
 const fs = require('fs')
 const csv = require('fast-csv');
 const date = require('date-and-time')
@@ -24,7 +26,7 @@ function initialiseStations (app, options) {
 
 	options.devices.forEach(device => {
 		if (device.enabled) {
-			message = {context: 'aton.' + device.stationName, updates: [ {values:
+			const message = {context: 'aton.' + device.stationName, updates: [ {values:
 				[ { path: 'navigation.position', value: {latitude: device.stationLat, longitude: device.stationLon} },
 				  { path: 'environment.nextExtreme', value: ""},
 				  { path: 'environment.tidalTrend', value: "" }
@@ -38,19 +40,25 @@ function initialiseStations (app, options) {
 
 function updateStations(app, options) {
 	app.debug ("Updating tidal stations current waterlevels from downloaded files into SignalK.")
-	timestampNow = new Date()
-	dateNow = date.format(roundToNearestMinute(timestampNow), "DD-M-YYYY")
-	timeNow = date.format(roundToNearestMinute(timestampNow), "HH:mm:ss")
-	streamState = {}
+	const timestampNow = new Date()
+	const dateNow = date.format(roundToNearestMinute(timestampNow), "DD-M-YYYY")
+	const timeNow = date.format(roundToNearestMinute(timestampNow), "HH:mm:ss")
 	options.devices.forEach(device => {
 		if (device.enabled) {
-			fileName = require('path').join(app.getDataDirPath(), device.csvFileName)
-			streamState[device.stationName] = {status: LOOKING_FOR_CURRENT_LEVEL, previousWaterLevel: 0, waterLevel: 0, tidalTrend: 0, tide: 0, currentTide: 0}
+			const fileName = require('path').join(app.getDataDirPath(), device.csvFileName)
+			let status = LOOKING_FOR_CURRENT_LEVEL 
+			let previousWaterLevel = 0 
+			let previousTimeStamp = 0 
+			let waterLevel = 0 
+			let tidalTrend = 0
+			let tide = 0
+			let currentTide = 0
+			let nextExtreme = ""
 			console.log ("Reading", fileName)
 			fs.createReadStream(fileName)
 				.pipe(csv.parse({ headers: true, delimiter: ";" }))
 				.on('error', error => console.error(error))
-				.on('data', row => {with (streamState[device.stationName]) {
+				.on('data', row => {
 					waterLevel = parseFloat(row.Verwachting)/100
 					tidalTrend = waterLevel - previousWaterLevel
 					tidalTrend = tidalTrend.toFixed(2)
@@ -78,7 +86,7 @@ function updateStations(app, options) {
 						}
 					previousWaterLevel = waterLevel
 					previousTimeStamp = row.Tijd.substring(0,5)
-				}});
+				});
 		}
 	}) // forEach
 } // function updateStations
@@ -87,7 +95,7 @@ function updateStations(app, options) {
 function downloadStationData(app, options) {
 	options.devices.forEach(device => {
 		app.debug(">---- Downloading file " + device.csvFileName) 
-		fileName = require('path').join(app.getDataDirPath(), device.csvFileName)
+		const fileName = require('path').join(app.getDataDirPath(), device.csvFileName)
 		const file = fs.createWriteStream(fileName)
 		const request = https.get(options.downloadUrl + device.urlSuffix, function(response) {
 			if (response.statusCode !== 200) {
