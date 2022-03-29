@@ -78,6 +78,8 @@ function formatTimestamp(timestamp) {
 	return hour + ":" + min + ":" + sec;
 }
 
+
+
 function arrow (trend) {
 	if (trend) {
 		if (trend > 0.001) return '<img valign=center height="13px" src="up.png">'
@@ -93,17 +95,20 @@ function printSignalkTable(signalkData) {
 
 	total = 0.0
 	divider = 0.0
+	timeOut = 61
 	for (var station in stations) {
+		stale = Date.now() - stations[station].timestamp > 1000 * timeOut ? true : false;
+
 		result += "<tr>";
-		result += "<td><b>" + station + "</td>";	
+		result += "<td><b>" + (stale ? "<strike>" : "") + station + "</td>";	
 		result += "<td>" + "</td>";	
-		result += "<td>" + stations[station].waterlevel + "</td>";	
+		result += "<td>" + (stale ? "<strike>" : "") + stations[station].waterlevel + "</td>";	
 		result += "<td align='center'>" + arrow(stations[station].tidalTrend) + "</td>";	
 		result += "<td align='center'>" + stations[station].tidalTrend + "</td>";	
 		result += "<td>" + stations[station].nextExtreme + "</td>";	
 		range = 60 * Math.sqrt (Math.pow(stations[station].latitude - ownLat, 2) 
 			+ Math.pow(Math.cos (ownLat / 180 * Math.PI) * (stations[station].longitude - ownLon), 2)) 
-		// result += "<td>" + range + "</td>";	
+
 		weighingFactor = 1 / range
 		total += stations[station].waterlevel * weighingFactor
 		divider += weighingFactor
@@ -191,11 +196,14 @@ ws.onmessage = function(event) {
 
 	for (var key in json) {
 		//logDiv.innerHTML = JSON.stringify(json[key][0], null, 2);
+		//logDiv.innerHTML = JSON.stringify(stations)
 		if (key == "context") {
 			target = json[key]
 		}
 		if (key == "updates" ) {
 			ts = Date.parse(json[key][0]['timestamp']);
+			station = target.split(".")[1]
+
 			// loop through all updated paths and store them in the various dicts
 
 			values = json[key][0]['values'];
@@ -203,7 +211,6 @@ ws.onmessage = function(event) {
 			for (tuple in values) {
 				path = values[tuple]['path'];
 				value = values[tuple]['value'];
-				station = target.split(".")[1]
 
 				if (path == "") { 
 					names[target] = value["name"] 
@@ -212,6 +219,7 @@ ws.onmessage = function(event) {
 				if (path == "environment.depth.belowSurface") { 
 					if (stations[station]) {
 						stations[station].waterlevel = value
+						stations[station].timestamp  = ts
 					}
 				} 
 
