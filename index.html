@@ -80,8 +80,8 @@ function formatTimestamp(timestamp) {
 
 function arrow (trend) {
 	if (trend) {
-		if (trend > 0.001) return '<span style="color:blue;">🡅</span>'
-		if (trend < -0.001) return '<span style="color:red;">🡇</span>'
+		if (trend > 0.001) return '<img valign=center height="13px" src="up.png">'
+		if (trend < -0.001) return '<img valign=center height="13px" src="down.png">'
 	}
 	return ''
 }
@@ -98,7 +98,7 @@ function printSignalkTable(signalkData) {
 		result += "<td><b>" + station + "</td>";	
 		result += "<td>" + "</td>";	
 		result += "<td>" + stations[station].waterlevel + "</td>";	
-		result += "<td>" + arrow(stations[station].tidalTrend) + "</td>";	
+		result += "<td align='center'>" + arrow(stations[station].tidalTrend) + "</td>";	
 		result += "<td align='center'>" + stations[station].tidalTrend + "</td>";	
 		result += "<td>" + stations[station].nextExtreme + "</td>";	
 		range = 60 * Math.sqrt (Math.pow(stations[station].latitude - ownLat, 2) 
