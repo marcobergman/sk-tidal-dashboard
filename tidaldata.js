@@ -46,14 +46,14 @@ function updateStations(app) {
 	streamState = {}
 	stationList.forEach(stationName => {
 		fileName = require('path').join(app.getDataDirPath(), stationName + '.csv')
-		streamState[stationName] = {status: LOOKING_FOR_CURRENT_LEVEL, previousWaterLevel: 0}
+		streamState[stationName] = {status: LOOKING_FOR_CURRENT_LEVEL, previousWaterLevel: 0, waterLevel: 0, tidalTrend: 0, tide: 0, currentTide: 0}
 		console.log ("Reading", fileName)
 		fs.createReadStream(fileName)
 			.pipe(csv.parse({ headers: true, delimiter: ";" }))
 			.on('error', error => console.error(error))
-			.on('data', row => {
+			.on('data', row => {with (streamState[stationName]) {
 				waterLevel = parseFloat(row.Verwachting)/100
-				tidalTrend = waterLevel - streamState[stationName].previousWaterLevel
+				tidalTrend = waterLevel - previousWaterLevel
 				tidalTrend = tidalTrend.toFixed(2)
 				if (tidalTrend > 0)
 					tide = RISING
@@ -62,24 +62,24 @@ function updateStations(app) {
 				if (row.Datum == dateNow && row.Tijd == timeNow) {
 					console.log (stationName, "waterLevel", waterLevel)
 					app.handleMessage('my-signalk-plugin', {context: 'aton.' + stationName, updates: [ {values: 
-						[ { path: 'environment.depth.belowSurface', value: waterLevel },
+						[ { path: 'environment.depth.belowSurface', value: waterLevel.toFixed(2) },
 						  { path: 'environment.tidalTrend', value: tidalTrend } ]
 					} ] })
-					streamState[stationName].status = LOOKING_FOR_NEXT_EXTREME
+					status = LOOKING_FOR_NEXT_EXTREME
 					currentTide = tide
 				}
-				if (streamState[stationName].status == LOOKING_FOR_NEXT_EXTREME)
+				if (status == LOOKING_FOR_NEXT_EXTREME)
 					if (tide != currentTide) {
-						nextExtreme = currentTide + " " + streamState[stationName].previousTimeStamp + " " + streamState[stationName].previousWaterLevel
+						nextExtreme = currentTide + " " + previousTimeStamp + " " + previousWaterLevel.toFixed(2)
 						console.log(stationName, "nextExtreme", nextExtreme)
 						app.handleMessage('my-signalk-plugin', {context: 'aton.' + stationName, updates: [ {values:
 							[ { path: 'environment.nextExtreme', value: nextExtreme } ]
 						} ] })
-						streamState[stationName].status = NOT_LOOKING_ANYMORE
+						status = NOT_LOOKING_ANYMORE
 					}
-				streamState[stationName].previousWaterLevel = waterLevel
-				streamState[stationName].previousTimeStamp = row.Tijd.substring(0,5)
-			});
+				previousWaterLevel = waterLevel
+				previousTimeStamp = row.Tijd.substring(0,5)
+			}});
 	}) // forEach
 } // function updateStations
 
