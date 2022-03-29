@@ -31,7 +31,7 @@ module.exports = function(app) {
   var unsubscribes = [];
 
   plugin.id = PLUGIN_ID
-  plugin.name = "SignalK Waterlevel App"
+  plugin.name = "SignalK Tidal Dashboard"
   plugin.description = "SignalK node server plugin that reads tidal data from the internet and displays it in a web app."
 
 
@@ -47,7 +47,7 @@ module.exports = function(app) {
 	let localSubscription = {
 	  context: '*', // Get data for all contexts
 	  subscribe: [{
-	    path: 'navigation.position', // Get all paths
+	    path: 'navigation.position', 
 	    period: 5000 // Every 5000ms
 	  }]
 	};
