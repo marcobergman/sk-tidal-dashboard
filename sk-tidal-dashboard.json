@@ -11,7 +11,8 @@
         "stationLat": 53.176993333,
         "stationLon": 5.40297,
         "stationSource": "https://waterinfo.rws.nl/api/Download/CSV?expertParameter=Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm&locationSlug=Harlingen(HARL)&timehorizon=-672,0",
-        "urlSuffix": "&locationSlug=Harlingen(HARL)"
+        "urlSuffix": "&locationSlug=Harlingen(HARL)",
+        "enabled": true
       },
       {
         "stationName": "West-Terschelling",
@@ -19,7 +20,8 @@
         "csvFileName": "West-Terschelling.csv",
         "urlSuffix": "&locationSlug=West-Terschelling(WTER)",
         "stationLat": 53.353418333,
-        "stationLon": 5.219511667
+        "stationLon": 5.219511667,
+        "enabled": true
       },
       {
         "stationName": "Vlieland",
@@ -27,7 +29,8 @@
         "csvFileName": "Vlieland.csv",
         "urlSuffix": "&locationSlug=Vlieland-haven(VLIE)",
         "stationLat": 53.293793333,
-        "stationLon": 5.091591667
+        "stationLon": 5.091591667,
+        "enabled": true
       },
       {
         "stationName": "Kornwerderzand",
@@ -35,7 +38,35 @@
         "csvFileName": "Kornwerderzand.csv",
         "urlSuffix": "&locationSlug=Kornwerderzand-buiten(KOBU)",
         "stationLat": 53.07962,
-        "stationLon": 5.335151667
+        "stationLon": 5.335151667,
+        "enabled": true
+      },
+      {
+        "stationName": "Den Helder",
+        "enabled": false,
+        "sourceType": 1,
+        "csvFileName": "Den-Helder.csv",
+        "stationLat": 52.964406667,
+        "stationLon": 4.787375,
+        "urlSuffix": "&locationSlug=Den-Helder(DENH)"
+      },
+      {
+        "stationName": "Den Oever",
+        "enabled": false,
+        "sourceType": 1,
+        "csvFileName": "Den-Oever.csv",
+        "stationLat": 52.942923333,
+        "stationLon": 5.044748333,
+        "urlSuffix": "&locationSlug=Den-Oever-buiten(OEBU)"
+      },
+      {
+        "stationName": "Oudeschild",
+        "enabled": false,
+        "sourceType": 1,
+        "csvFileName": "Oudeschild.csv",
+        "stationLat": 53.039098333,
+        "stationLon": 4.853613333,
+        "urlSuffix": "&locationSlug=Oudeschild(OUDE)"
       }
     ]
   },

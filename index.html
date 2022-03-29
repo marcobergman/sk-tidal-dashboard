@@ -114,7 +114,7 @@ function printSignalkTable(signalkData) {
 		divider += weighingFactor
 	}
 	average = total / divider
-	result += "<tr><td><b>THIS SHIP "+formatTimestamp(Date.now())+"<td><td><b><h1>" + average.toFixed(2) + "</td></tr>"
+	result += "<tr><td><b>THIS SHIP "+formatTimestamp(Date.now())+"<td><td><b><h1>" + average.toFixed(2) + "</td><td><td><td></tr>"
 
 	result += "</table>";
 	dataDiv.innerHTML = result;

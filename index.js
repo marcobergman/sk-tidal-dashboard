@@ -42,7 +42,7 @@ module.exports = function(app) {
 
 	initialiseStations(app, options)
 	downloadStationData(app, options)
-	updateStations(app)
+	updateStations(app, options)
 
 	let localSubscription = {
 	  context: '*', // Get data for all contexts
@@ -65,7 +65,7 @@ module.exports = function(app) {
 	    delta.updates.forEach(u => {
 		elapsedSeconds = (Date.now() - lastUpdate)/1000;
 		if (elapsedSeconds > options.updateInterval) {
-			updateStations(app)
+			updateStations(app, options)
 			lastUpdate = Date.now()
 		}
 		elapsedSeconds = (Date.now() - lastDownload)/1000;
@@ -123,6 +123,11 @@ module.exports = function(app) {
               type: 'string',
               title: 'Station name'
             },
+	    enabled: {
+		type: 'boolean',
+		title: 'Enabled',
+		default: true
+		},
             sourceType: {
               type: 'number',
               title: 'Source type (normally 1)',
