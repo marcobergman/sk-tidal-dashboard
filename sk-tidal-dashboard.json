@@ -5,23 +5,31 @@
     "downloadInterval": 3600,
     "devices": [
       {
-        "stationName": "Harlingen",
+        "stationName": "Den Helder",
+        "enabled": false,
         "sourceType": 1,
-        "csvFileName": "Harlingen.csv",
-        "stationLat": 53.176993333,
-        "stationLon": 5.40297,
-        "stationSource": "https://waterinfo.rws.nl/api/Download/CSV?expertParameter=Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm&locationSlug=Harlingen(HARL)&timehorizon=-672,0",
-        "urlSuffix": "&locationSlug=Harlingen(HARL)",
-        "enabled": true
+        "csvFileName": "Den-Helder.csv",
+        "stationLat": 52.964406667,
+        "stationLon": 4.787375,
+        "urlSuffix": "&locationSlug=Den-Helder(DENH)"
       },
       {
-        "stationName": "West-Terschelling",
+        "stationName": "Oudeschild",
+        "enabled": false,
         "sourceType": 1,
-        "csvFileName": "West-Terschelling.csv",
-        "urlSuffix": "&locationSlug=West-Terschelling(WTER)",
-        "stationLat": 53.353418333,
-        "stationLon": 5.219511667,
-        "enabled": true
+        "csvFileName": "Oudeschild.csv",
+        "stationLat": 53.039098333,
+        "stationLon": 4.853613333,
+        "urlSuffix": "&locationSlug=Oudeschild(OUDE)"
+      }
+      {
+        "stationName": "Den Oever",
+        "enabled": false,
+        "sourceType": 1,
+        "csvFileName": "Den-Oever.csv",
+        "stationLat": 52.942923333,
+        "stationLon": 5.044748333,
+        "urlSuffix": "&locationSlug=Den-Oever-buiten(OEBU)"
       },
       {
         "stationName": "Vlieland",
@@ -42,31 +50,23 @@
         "enabled": true
       },
       {
-        "stationName": "Den Helder",
-        "enabled": false,
+        "stationName": "West-Terschelling",
         "sourceType": 1,
-        "csvFileName": "Den-Helder.csv",
-        "stationLat": 52.964406667,
-        "stationLon": 4.787375,
-        "urlSuffix": "&locationSlug=Den-Helder(DENH)"
+        "csvFileName": "West-Terschelling.csv",
+        "urlSuffix": "&locationSlug=West-Terschelling(WTER)",
+        "stationLat": 53.353418333,
+        "stationLon": 5.219511667,
+        "enabled": true
       },
       {
-        "stationName": "Den Oever",
-        "enabled": false,
+        "stationName": "Harlingen",
         "sourceType": 1,
-        "csvFileName": "Den-Oever.csv",
-        "stationLat": 52.942923333,
-        "stationLon": 5.044748333,
-        "urlSuffix": "&locationSlug=Den-Oever-buiten(OEBU)"
-      },
-      {
-        "stationName": "Oudeschild",
-        "enabled": false,
-        "sourceType": 1,
-        "csvFileName": "Oudeschild.csv",
-        "stationLat": 53.039098333,
-        "stationLon": 4.853613333,
-        "urlSuffix": "&locationSlug=Oudeschild(OUDE)"
+        "csvFileName": "Harlingen.csv",
+        "stationLat": 53.176993333,
+        "stationLon": 5.40297,
+        "stationSource": "https://waterinfo.rws.nl/api/Download/CSV?expertParameter=Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm&locationSlug=Harlingen(HARL)&timehorizon=-672,0",
+        "urlSuffix": "&locationSlug=Harlingen(HARL)",
+        "enabled": true
       }
     ]
   },
