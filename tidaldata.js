@@ -59,9 +59,9 @@ function updateStations(app, options) {
 				.pipe(csv.parse({ headers: true, delimiter: ";" }))
 				.on('error', error => console.error(error))
 				.on('data', row => {
-					waterLevel = parseFloat(row.Verwachting)/100
+					waterLevel = (row.Verwachting > 0 ? "+" : "") + (parseFloat(row.Verwachting)/100).toFixed(2)
 					tidalTrend = waterLevel - previousWaterLevel
-					tidalTrend = tidalTrend.toFixed(2)
+					tidalTrend = (tidalTrend > 0 ? "+": "") + tidalTrend.toFixed(2)
 					if (tidalTrend > 0)
 						tide = RISING
 					if (tidalTrend < 0)
@@ -69,7 +69,7 @@ function updateStations(app, options) {
 					if (row.Datum == dateNow && row.Tijd == timeNow) {
 						console.log (device.stationName, "waterLevel", waterLevel)
 						app.handleMessage('my-signalk-plugin', {context: 'aton.' + device.stationName, updates: [ {values: 
-							[ { path: 'environment.depth.belowSurface', value: waterLevel.toFixed(2) },
+							[ { path: 'environment.depth.belowSurface', value: waterLevel },
 							  { path: 'environment.tidalTrend', value: tidalTrend } ]
 						} ] })
 						status = LOOKING_FOR_NEXT_EXTREME
@@ -77,7 +77,7 @@ function updateStations(app, options) {
 					}
 					if (status == LOOKING_FOR_NEXT_EXTREME)
 						if (tide != currentTide) {
-							nextExtreme = currentTide + " " + previousTimeStamp + " " + previousWaterLevel.toFixed(2)
+							nextExtreme = currentTide + " " + previousTimeStamp + " " + previousWaterLevel
 							console.log(device.stationName, "nextExtreme", nextExtreme)
 							app.handleMessage('my-signalk-plugin', {context: 'aton.' + device.stationName, updates: [ {values:
 								[ { path: 'environment.nextExtreme', value: nextExtreme } ]
