@@ -41,21 +41,21 @@
         "enabled": true
       },
       {
-        "stationName": "Kornwerderzand",
-        "sourceType": 1,
-        "csvFileName": "Kornwerderzand.csv",
-        "urlSuffix": "&locationSlug=Kornwerderzand-buiten(KOBU)",
-        "stationLat": 53.07962,
-        "stationLon": 5.335151667,
-        "enabled": true
-      },
-      {
         "stationName": "West-Terschelling",
         "sourceType": 1,
         "csvFileName": "West-Terschelling.csv",
         "urlSuffix": "&locationSlug=West-Terschelling(WTER)",
         "stationLat": 53.353418333,
         "stationLon": 5.219511667,
+        "enabled": true
+      },
+      {
+        "stationName": "Kornwerderzand",
+        "sourceType": 1,
+        "csvFileName": "Kornwerderzand.csv",
+        "urlSuffix": "&locationSlug=Kornwerderzand-buiten(KOBU)",
+        "stationLat": 53.07962,
+        "stationLon": 5.335151667,
         "enabled": true
       },
       {
