@@ -82,7 +82,7 @@ function formatTimestamp(timestamp) {
 function timeDiff (t) {
 	n = new Date();
 	t = new Date(n.getFullYear(), n.getMonth(), n.getDate(), t.substring(0,2), t.substring(3,5), 1)
-	return (((t-n)/1000/3600 + 24)%24).toFixed(1)
+	return ((Math.round((t-n)/1000/600)/6 + 24)%24)
 
 }
 
