@@ -56,20 +56,22 @@ function updateStations(app, options) {
 			let nextExtreme = ""
 			console.log ("Reading", fileName)
 			fs.createReadStream(fileName)
-				.pipe(csv.parse({ headers: true, delimiter: ";" }))
+				.pipe(csv.parse({ headers: ["date", "time", "parameter", "location", "actual", "expectation", "astro", "unit", "height", "reference", "rest"], 
+					strictColumnHandling: false, delimiter: ";", ignoreEmpty:true }))
 				.on('error', error => console.error(error))
 				.on('data', row => {
-					waterLevel = (row.Verwachting > 0 ? "+" : "") + (parseFloat(row.Verwachting)/100).toFixed(2)
+					waterLevel = (row.expectation > 0 ? "+" : "") + (parseFloat(row.expectation)/100).toFixed(2)
 					tidalTrend = waterLevel - previousWaterLevel
 					tidalTrend = (tidalTrend > 0 ? "+": "") + tidalTrend.toFixed(2)
 					if (tidalTrend > 0)
 						tide = RISING
 					if (tidalTrend < 0)
 						tide = FALLING
-					if (row.Datum == dateNow && row.Tijd == timeNow) {
-						console.log (device.stationName, "waterLevel", waterLevel)
+					if (row.date == dateNow && row.time == timeNow) {
+						console.log (device.stationName, "waterLevel", waterLevel, row.astro)
 						app.handleMessage('my-signalk-plugin', {context: 'aton.' + device.stationName, updates: [ {values: 
 							[ { path: 'environment.depth.belowSurface', value: waterLevel },
+							  { path: 'environment.depth.astro', value: row.astro },
 							  { path: 'environment.tidalTrend', value: tidalTrend } ]
 						} ] })
 						status = LOOKING_FOR_NEXT_EXTREME
@@ -85,7 +87,7 @@ function updateStations(app, options) {
 							status = NOT_LOOKING_ANYMORE
 						}
 					previousWaterLevel = waterLevel
-					previousTimeStamp = row.Tijd.substring(0,5)
+					previousTimeStamp = row.time.substring(0,5)
 				});
 		}
 	}) // forEach
