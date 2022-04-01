@@ -106,7 +106,7 @@ function arrow (trend) {
 
 
 function printSignalkTable(signalkData) {
-	var result = "<table border=0><tr><td><b>Station<td width=100><b>Level (MSL)<td width=100 colspan=2><b>Trend/10min<td width=100><b>Rel.astro<td><b>Next</tr>";
+	var result = "<table border=0><tr><td><b>Station<td width=100><b>Level (MSL)<td width=100 colspan=2><b>Trend/10min<td width=100 align='center'><b>Rel.astro<td><b>Next</tr>";
 
 	total = 0.0
 	divider = 0.0
@@ -132,7 +132,9 @@ function printSignalkTable(signalkData) {
 		divider += weighingFactor
 	}
 	average = total / divider
-	result += "<tr><td><b>THIS SHIP "+formatTimestamp(Date.now())+"<td align='center'><b><h1>" + average.toFixed(2) + "</td><td colspan=4></tr>"
+	result += "<tr><td><b>THIS SHIP "+formatTimestamp(Date.now()) + "</td>";	
+	result += "<td align='center'><b><h1>" + average.toFixed(2) + "</td>";	
+	result += "<td colspan=4></tr>"
 
 	result += "</table>";
 	dataDiv.innerHTML = result;
