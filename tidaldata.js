@@ -62,10 +62,10 @@ function updateStations(app, options) {
 				.on('data', row => {
 					waterLevel = (row.expectation > 0 ? "+" : "") + (parseFloat(row.expectation)/100).toFixed(2)
 					tidalTrend = waterLevel - previousWaterLevel
-					tidalTrend = (tidalTrend > 0 ? "+": "") + tidalTrend.toFixed(2)
-					if (tidalTrend > 0)
+					tidalTrend = (tidalTrend > 0 ? "+" : "") + tidalTrend.toFixed(2)
+					if (tidalTrend > 0.01)
 						tide = RISING
-					if (tidalTrend < 0)
+					if (tidalTrend < -0.01)
 						tide = FALLING
 					if (row.date == dateNow && row.time == timeNow) {
 						console.log (device.stationName, "waterLevel", waterLevel, row.astro)
