@@ -51,7 +51,7 @@ function updateStations(app, options) {
 			let previousTimeStamp = 0 
 			let waterLevel = 0 
 			let tidalTrend = 0
-			let tide = 0
+			let tide = "??"
 			let currentTide = 0
 			let nextExtreme = ""
 			console.log ("Reading", fileName)
@@ -60,7 +60,9 @@ function updateStations(app, options) {
 					strictColumnHandling: false, delimiter: ";", ignoreEmpty:true }))
 				.on('error', error => console.error(error))
 				.on('data', row => {
-					waterLevel = (row.expectation > 0 ? "+" : "") + (parseFloat(row.expectation)/100).toFixed(2)
+					waterLevel = row.actual // to set tide in case the file starts at current time
+					if (row.expectation)
+						waterLevel = (row.expectation > 0 ? "+" : "") + (parseFloat(row.expectation)/100).toFixed(2)
 					tidalTrend = waterLevel - previousWaterLevel
 					tidalTrend = (tidalTrend > 0 ? "+" : "") + tidalTrend.toFixed(2)
 					if (tidalTrend > 0.01)
