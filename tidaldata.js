@@ -107,10 +107,14 @@ function downloadStationData(app, options) {
 				}
 				response.pipe(file);
 				file.on('finish', function () {
-					fs.rename(fileName + ".tmp", fileName, (err) => {
-						if (err) throw err;
-					});
-					app.debug("----> " + device.csvFileName + " downloaded OK")
+					if (fs.statSync(fileName + ".tmp").size > 1000) {
+						fs.rename(fileName + ".tmp", fileName, (err) => {
+							if (err) throw err;
+						});
+						app.debug("----> " + device.csvFileName + " downloaded OK")
+					}
+					else
+						app.debug("----X " + device.csvFileName + ".tmp too small; ignored")
 					file.close()
 				})
 				file.on('error', function () {
