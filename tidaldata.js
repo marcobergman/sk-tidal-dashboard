@@ -41,7 +41,7 @@ function initialiseStations (app, options) {
 function updateStations(app, options) {
 	app.debug ("Updating tidal stations current waterlevels from downloaded files into SignalK.")
 	const timestampNow = new Date()
-	const dateNow = date.format(roundToNearestMinute(timestampNow), "DD-M-YYYY")
+	const dateNow = date.format(roundToNearestMinute(timestampNow), "D-M-YYYY")
 	const timeNow = date.format(roundToNearestMinute(timestampNow), "HH:mm:ss")
 	options.devices.forEach(device => {
 		if (device.enabled) {
@@ -94,24 +94,29 @@ function updateStations(app, options) {
 
 function downloadStationData(app, options) {
 	options.devices.forEach(device => {
-		app.debug(">---- Downloading file " + device.csvFileName) 
-		const fileName = require('path').join(app.getDataDirPath(), device.csvFileName)
-		const file = fs.createWriteStream(fileName)
-		const request = https.get(options.downloadUrl + device.urlSuffix, function(response) {
-			if (response.statusCode !== 200) {
-				app.debug("***** " + device.csvFileName + " not OK")
-				return;
-			}
-  			response.pipe(file);
-			file.on('finish', function () {
-				app.debug("----> " + device.csvFileName + " downloaded OK")
-				file.close()
-			})
-			file.on('error', function () {
-				app.debug("***** " + device.csvFileName + " NOT OK")
-				file.close()
-			})
-		});
+		if (device.enabled) {
+			app.debug(">---- Downloading file " + device.csvFileName) 
+			const fileName = require('path').join(app.getDataDirPath(), device.csvFileName)
+			const file = fs.createWriteStream(fileName + ".tmp")
+			const request = https.get(options.downloadUrl + device.urlSuffix, function(response) {
+				if (response.statusCode !== 200) {
+					app.debug("***** " + device.csvFileName + " not OK")
+					return;
+				}
+				response.pipe(file);
+				file.on('finish', function () {
+					fs.rename(fileName + ".tmp", fileName, (err) => {
+						if (err) throw err;
+					});
+					app.debug("----> " + device.csvFileName + " downloaded OK")
+					file.close()
+				})
+				file.on('error', function () {
+					app.debug("***** " + device.csvFileName + " NOT OK")
+					file.close()
+				})
+			});
+		}	
 
 	})
 }
