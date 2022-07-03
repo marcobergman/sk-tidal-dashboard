@@ -56,9 +56,9 @@ function updateStations(app, options) {
 			let nextExtreme = ""
 			console.log ("Reading", fileName)
 			fs.createReadStream(fileName)
-				.pipe(csv.parse({ headers: ["date", "time", "parameter", "location", "actual", "expectation", "astro", "unit", "height", "reference", "rest"], 
-					strictColumnHandling: false, delimiter: ";", ignoreEmpty:true }))
-				.on('error', error => console.error(error))
+				.pipe(csv.parse({ headers: ["date", "time", "parameter", "location", "actual", "expectation", "astro"], 
+					strictColumnHandling: false, delimiter: ";", ignoreEmpty:true, discardUnmappedColumns:true }))
+				.on('error', error => console.error("Error when processing file " + fileName+ ": " + error))
 				.on('data', row => {
 					waterLevel = row.actual // to set tide in case the file starts at current time
 					if (row.expectation)

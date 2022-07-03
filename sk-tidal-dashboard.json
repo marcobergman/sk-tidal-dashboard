@@ -6,7 +6,7 @@
     "devices": [
       {
         "stationName": "Den Helder",
-        "enabled": false,
+        "enabled": true,
         "sourceType": 1,
         "csvFileName": "Den-Helder.csv",
         "stationLat": 52.964406667,
@@ -15,7 +15,7 @@
       },
       {
         "stationName": "Oudeschild",
-        "enabled": false,
+        "enabled": true,
         "sourceType": 1,
         "csvFileName": "Oudeschild.csv",
         "stationLat": 53.039098333,
@@ -24,7 +24,7 @@
       },
       {
         "stationName": "Den Oever",
-        "enabled": false,
+        "enabled": true,
         "sourceType": 1,
         "csvFileName": "Den-Oever.csv",
         "stationLat": 52.942923333,
@@ -67,10 +67,55 @@
         "stationSource": "https://waterinfo.rws.nl/api/Download/CSV?expertParameter=Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm&locationSlug=Harlingen(HARL)&timehorizon=-672,0",
         "urlSuffix": "&locationSlug=Harlingen(HARL)",
         "enabled": true
+      },
+      {
+        "stationName": "Nes",
+        "enabled": true,
+        "sourceType": 1,
+        "csvFileName": "Nes.csv",
+        "stationLat": 53.43239167,
+        "stationLon": 5.774065,
+        "urlSuffix": "&locationSlug=Nes(NES)-1"
+      },
+      {
+        "stationName": "Holwerd\t",
+        "enabled": true,
+        "sourceType": 1,
+        "csvFileName": "Holwerd.csv",
+        "stationLat": 53.39602833,
+        "stationLon": 5.877181667,
+        "urlSuffix": "&locationSlug=Holwerd(HOLW)"
+      },
+      {
+        "stationName": "Schiermonnikoog",
+        "enabled": true,
+        "sourceType": 1,
+        "csvFileName": "Schiermonnikoog.csv",
+        "stationLat": 53.46823,
+        "stationLon": 6.167101667,
+        "urlSuffix": "&locationSlug=Schiermonnikoog(SCHI)"
+      },
+      {
+        "stationName": "Lauwersoog",
+        "enabled": true,
+        "sourceType": 1,
+        "csvFileName": "Lauwersoog.csv",
+        "stationLat": 53.41160167,
+        "stationLon": 6.200623333,
+        "urlSuffix": "&locationSlug=Lauwersoog(LAUW)"
+      },
+      {
+        "stationName": "Wierumergronden",
+        "enabled": true,
+        "sourceType": 1,
+        "csvFileName": "Wierumergronden.csv",
+        "stationLat": 53.52629,
+        "stationLon": 6.0347,
+        "urlSuffix": "&locationSlug=Wierumergronden(WIER)"
       }
     ]
   },
   "enabled": true,
-  "enableDebug": true,
-  "enableLogging": true
+  "enableDebug": false,
+  "enableLogging": false
 }
