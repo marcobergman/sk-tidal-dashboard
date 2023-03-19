@@ -1,7 +1,7 @@
 {
   "configuration": {
     "updateInterval": 60,
-    "downloadUrl": "https://waterinfo.rws.nl/api/Download/CSV?expertParameter=Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm&timehorizon=-48,48",
+    "downloadUrl": "https://waterinfo.rws.nl/api/CsvDownload/CSV?expertParameter=Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm&timehorizon=-48,48",
     "downloadInterval": 3600,
     "devices": [
       {
