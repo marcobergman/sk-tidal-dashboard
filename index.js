@@ -45,14 +45,14 @@ module.exports = function(app) {
 	updateStations(app, options)
 
 	let localSubscription = {
-	  context: '*', // Get data for all contexts
+	  context: 'vessels.self', // Get data for self
 	  subscribe: [{
 	    path: 'navigation.position', 
 	    period: 5000 // Every 5000ms
 	  }]
 	};
 
-	var lastUpdate = Date.now() - options.updateInterval * 1000 + 2000;
+	var lastUpdate = Date.now();
 	var lastDownload = Date.now();
 
 	app.subscriptionmanager.subscribe(
@@ -76,8 +76,7 @@ module.exports = function(app) {
 	    });
 	  }
 	);
-
-
+	
   }; //plugin start
 
 
@@ -97,20 +96,19 @@ module.exports = function(app) {
       updateInterval: {
         type: 'number',
         title: 'Update interval for the water levels into signalk (seconds)',
-	      description: 'The granularity of the water level data is 10 minutes. However, the update frequency should be smaller',
+	      description: 'The granularity of the water level data is 10 minutes. However, the update frequency should be smaller, to update right after the new data is valid.',
         default: 60},
 
       downloadUrl: {
         type: 'string',
         title: 'Download URL',
 	      description: 'First part of the download URL for getting the tidal data. For each station, this URL is given a specified additional suffix',
-        default: 'https://waterinfo.rws.nl/api/Download/CSV?expertParameter=Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm&timehorizon=-48,48'},
+        default: 'https://waterinfo.rws.nl/api/CsvDownload/CSV?expertParameter=Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm&timehorizon=-48,48'},
 
       downloadInterval: {
         type: 'number',
         title: 'Download interval for downloading the CSV files with tidal data (seconds).',
-	      descriptionxx: 'The granularity of the water level data is 10 minutes. However, the update frequency should be smaller',
-        default: 60},
+        default: 3600},
 
       devices: {
         type: 'array',
