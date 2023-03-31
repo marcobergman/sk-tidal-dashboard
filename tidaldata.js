@@ -60,7 +60,7 @@ function updateStations(app, options) {
 					strictColumnHandling: false, delimiter: ";", ignoreEmpty:true, discardUnmappedColumns:true }))
 				.on('error', error => console.error("Error when processing file " + fileName+ ": " + error))
 				.on('data', row => {
-					waterLevel = row.actual // to set tide in case the file starts at current time
+					waterLevel = (parseFloat(row.actual/100).toFixed(2)) // to set tide in case the file starts at current time
 					if (row.expectation)
 						waterLevel = (row.expectation > 0 ? "+" : "") + (parseFloat(row.expectation)/100).toFixed(2)
 					tidalTrend = waterLevel - previousWaterLevel
@@ -73,7 +73,7 @@ function updateStations(app, options) {
 						console.log (device.stationName, "waterLevel", waterLevel, row.astro)
 						app.handleMessage('my-signalk-plugin', {context: 'aton.' + device.stationName, updates: [ {values: 
 							[ { path: 'environment.depth.belowSurface', value: waterLevel },
-							  { path: 'environment.depth.astro', value: row.astro },
+							  { path: 'environment.depth.astro', value: row.astro / 100 },
 							  { path: 'environment.tidalTrend', value: tidalTrend } ]
 						} ] })
 						status = LOOKING_FOR_NEXT_EXTREME

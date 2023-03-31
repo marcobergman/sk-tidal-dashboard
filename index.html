@@ -115,7 +115,7 @@ function printSignalkTable(signalkData) {
 		stale = Date.now() - stations[station].timestamp > 1000 * timeOut ? true : false;
 		nextExtreme = stations[station].nextExtreme
 		diff = formatHour(timeDiff(nextExtreme.substring(3,8)))
-		relAstro = stations[station].waterlevel - stations[station].astro/100
+		relAstro = stations[station].waterlevel - stations[station].astro
 
 		result += "<tr>";
 		result += "<td><b>" + (stale ? "<strike>" : "") + station + "</td>";	
@@ -123,7 +123,7 @@ function printSignalkTable(signalkData) {
 		result += "<td align='center'>" + arrow(stations[station].tidalTrend) + "</td>";	
 		result += "<td align='center'>" + stations[station].tidalTrend + "</td>";	
 		result += "<td align='center'>" + (relAstro > 0 ? "+" : "") + relAstro.toFixed(2) + "</td>";	
-		result += "<td>" + nextExtreme.substring(0,3) + diff + nextExtreme.substring(2) + "</td>";	
+		result += "<td>" + diff + " " + nextExtreme + "</td>";	
 		range = 60 * Math.sqrt (Math.pow(stations[station].latitude - ownLat, 2) 
 			+ Math.pow(Math.cos (ownLat / 180 * Math.PI) * (stations[station].longitude - ownLon), 2)) 
 
