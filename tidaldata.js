@@ -43,6 +43,7 @@ function updateStations(app, options) {
 	const timestampNow = new Date()
 	const dateNow = date.format(roundToNearestMinute(timestampNow), "D-M-YYYY")
 	const timeNow = date.format(roundToNearestMinute(timestampNow), "HH:mm:ss")
+	console.log("Current time:", dateNow, timeNow)
 	options.devices.forEach(device => {
 		if (device.enabled) {
 			const fileName = require('path').join(app.getDataDirPath(), device.csvFileName)
@@ -102,9 +103,10 @@ function downloadStationData(app, options) {
 			app.debug(">---- Downloading file " + device.csvFileName) 
 			const fileName = require('path').join(app.getDataDirPath(), device.csvFileName)
 			const file = fs.createWriteStream(fileName + ".tmp")
-			const request = https.get(options.downloadUrl + device.urlSuffix, function(response) {
+			const downloadUrl = "https://waterinfo.rws.nl/api/CsvDownload/CSV?expertParameter=Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm&timehorizon=-48,48&"
+			const request = https.get(downloadUrl + device.urlSuffix, function(response) {
 				if (response.statusCode !== 200) {
-					app.debug("***** " + device.csvFileName + " not OK")
+					app.debug("***** " + downloadUrl + device.urlSuffix + " not OK")
 					return;
 				}
 				response.pipe(file);

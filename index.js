@@ -99,12 +99,6 @@ module.exports = function(app) {
 	      description: 'The granularity of the water level data is 10 minutes. However, the update frequency should be smaller, to update right after the new data is valid.',
         default: 60},
 
-      downloadUrl: {
-        type: 'string',
-        title: 'Download URL',
-	      description: 'First part of the download URL for getting the tidal data. For each station, this URL is given a specified additional suffix',
-        default: 'https://waterinfo.rws.nl/api/CsvDownload/CSV?expertParameter=Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm&timehorizon=-48,48'},
-
       downloadInterval: {
         type: 'number',
         title: 'Download interval for downloading the CSV files with tidal data (seconds).',
