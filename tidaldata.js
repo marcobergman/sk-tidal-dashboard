@@ -43,7 +43,7 @@ function updateStations(app, options) {
 	const timestampNow = new Date()
 	const dateNow = date.format(roundToNearestMinute(timestampNow), "D-M-YYYY")
 	const timeNow = date.format(roundToNearestMinute(timestampNow), "HH:mm:ss")
-	console.log("Current time:", dateNow, timeNow)
+	app.debug("Current time:", dateNow, timeNow)
 	options.devices.forEach(device => {
 		if (device.enabled) {
 			const fileName = require('path').join(app.getDataDirPath(), device.csvFileName)
